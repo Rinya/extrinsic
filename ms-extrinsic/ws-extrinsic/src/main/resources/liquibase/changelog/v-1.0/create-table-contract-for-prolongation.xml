@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.8"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.8
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.8.xsd">
+
+    <changeSet id="1" author="akjigitovrr">
+        <comment>Create table contract_for_prolongation</comment>
+        <createTable tableName="contract_for_prolongation" schemaName="ilog">
+            <column name="id" type="bigserial" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="contract_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="contract_number" type="varchar(50)"/>
+            <column name="begin_date" type="date"/>
+            <column name="end_date" type="timestamp"/>
+            <column name="fio" type="varchar(300)"/>
+            <column name="birth_date" type="date"/>
+            <column name="transport_identifier" type="varchar(200)"/>
+            <column name="transport_identifier_type" type="varchar(50)"/>
+        </createTable>
+
+        <createIndex indexName="contract_for_prolongation_fio_birth_date_transport_identifier_index"
+                     schemaName="ilog"
+                     tableName="contract_for_prolongation"
+                     unique="true">
+            <column name="fio" type="varchar(300)"/>
+            <column name="birth_date" type="date"/>
+            <column name="transport_identifier" type="varchar(200)"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

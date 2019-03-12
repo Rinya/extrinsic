@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <springProperty  name="service.name" source="spring.application.name" scope="context"/>
+    <property resource="application.properties"/>
+
+    <springProfile name="!prod">
+        <appender name="STASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+            <destination>${logging.elk.destination}</destination>
+            <secondaryConnectionTTL>5 minutes</secondaryConnectionTTL>
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+        </appender>
+    </springProfile>
+    <springProfile name="prod">
+        <appender name="STASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+            <destination>someip:someport</destination>
+            <secondaryConnectionTTL>5 minutes</secondaryConnectionTTL>
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+        </appender>
+    </springProfile>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <Pattern>
+                %d{yyyy-MM-dd HH:mm:ss a, Europe/Moscow} [%t] %-5level %logger{36} - %msg%n
+            </Pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logging.path}/ms-extrinsic.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <Pattern>
+                %d{yyyy-MM-dd HH:mm:ss a, Europe/Moscow} [%t] %-5level %logger{36} - %msg%n
+            </Pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- rollover daily -->
+            <fileNamePattern>${logging.path}/ms-extrinsic-%d{yyyy-MM-dd, Europe/Moscow}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <logger name="ru.alfastrah" level="info" additivity="false">
+        <appender-ref ref="FILE" />
+        <appender-ref ref="STASH" />
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+
+    <root level="error">
+        <appender-ref ref="FILE" />
+        <appender-ref ref="STASH" />
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>

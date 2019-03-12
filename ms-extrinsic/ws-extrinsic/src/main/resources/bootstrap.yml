@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: ms-extrinsic
+
+---
+spring:
+  profiles: dev
+  application:
+    name: ms-extrinsic
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        serviceId: configserver
+      fail-fast: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://someip:someport/eureka
+
+
+---
+spring:
+  profiles: test
+  application:
+    name: ms-extrinsic
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        serviceId: configserver
+      fail-fast: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://someip:someport/eureka,http://someip:someport/eureka
